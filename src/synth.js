@@ -1,6 +1,5 @@
 
 var generateNoteMappings = function() {
-
   var TWELFTH_ROOT_OF_TWO = 1.059463094359;
   var NOTE_NAMES = ["A","A#","B","C","C#","D","D#","E","F","F#","G","G#"];
   var middleA = 440;
@@ -43,22 +42,30 @@ var processKeys = function(data) {
 };
 
 var triggerNote = function(data, keyIndex) {
-  if (!data.hasOwnProperty('osc') || data.osc === false) {
-    var osc = data.context.createOscillator();
+  var osc = data.oscillators[keyIndex];
+  if (osc === false) {
+    osc = data.context.createOscillator();
     osc.type = osc.SINE;
     var notes = data.notes;
     var note = notes[(data.octave * 12) + keyIndex];
     osc.frequency.value = note.frequency;
     osc.connect(data.context.destination);
     osc.start(0);
-    data.osc = osc;
+    data.oscillators[keyIndex] = osc;
   }
 };
 
-var soundOff = function(data) {
-  if (data.hasOwnProperty('osc') && data.osc !== false) {
-    data.osc.stop(0);
-    data.osc = false;
+var soundOff = function(data, keyIndex) {
+  if (keyIndex === undefined) {
+    data.oscillators = data.oscillators.map(function(osc) {
+      if (osc !== false) {
+        osc.stop();
+      }
+      return false;
+    });
+  } else if (data.oscillators[keyIndex] !== false) {
+    data.oscillators[keyIndex].stop(0);
+    data.oscillators[keyIndex] = false;
   }
 };
 
@@ -69,7 +76,6 @@ var getSoundOffHandler = function(data) {
 };
 
 var getKeyDownHandler = function(data) {
-  var keys = ["A", "W", "S", "E", "D", "F", "T", "G", "Y", "H", "U", "J", "K", "O", "L", "P", ";", "'"];
   return function(e) {
     var keyCode = e.keyCode;
     var keyChar;
@@ -80,7 +86,7 @@ var getKeyDownHandler = function(data) {
     } else {
       keyChar = String.fromCharCode(e.keyCode);
     }
-    var keyIndex = keys.indexOf(keyChar);
+    var keyIndex = data.keyChars.indexOf(keyChar);
     if (keyIndex > -1) {
       triggerNote(data, keyIndex);
     }
@@ -94,9 +100,10 @@ var getKeyUpHandler = function(data) {
 };
 
 var main = function(context) {
-
   var destination = context.destination;
-  var data = {octave: 3, osc: false, context:context};
+  var keyChars = ["A", "W", "S", "E", "D", "F", "T", "G", "Y", "H", "U", "J", "K", "O", "L", "P", ";", "'"];
+  var oscillators = keyChars.map(function() { return false; });
+  var data = {keyChars: keyChars, octave: 3, oscillators: oscillators, context:context};
 
   data.notes = generateNoteMappings();
   processKeys(data);
