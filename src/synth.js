@@ -55,12 +55,41 @@ var triggerNote = function(data, keyIndex) {
   }
 };
 
+var soundOff = function(data) {
+  if (data.hasOwnProperty('osc') && data.osc !== false) {
+    data.osc.stop(0);
+    data.osc = false;
+  }
+};
+
 var getSoundOffHandler = function(data) {
   return function(e) {
-    if (data.hasOwnProperty('osc') && data.osc !== false) {
-      data.osc.stop(0);
-      data.osc = false;
+    soundOff(data);
+  };
+};
+
+var getKeyDownHandler = function(data) {
+  var keys = ["A", "W", "S", "E", "D", "F", "T", "G", "Y", "H", "U", "J", "K", "O", "L", "P", ";", "'"];
+  return function(e) {
+    var keyCode = e.keyCode;
+    var keyChar;
+    if (keyCode === 186 || keyCode === 59) {
+      keyChar = ";";
+    } else if (keyCode === 222 || keyCode === 39) {
+      keyChar = "'";
+    } else {
+      keyChar = String.fromCharCode(e.keyCode);
     }
+    var keyIndex = keys.indexOf(keyChar);
+    if (keyIndex > -1) {
+      triggerNote(data, keyIndex);
+    }
+  };
+};
+
+var getKeyUpHandler = function(data) {
+  return function(e) {
+    soundOff(data);
   };
 };
 
@@ -73,6 +102,8 @@ var main = function(context) {
   processKeys(data);
 
   document.addEventListener('mouseup', getSoundOffHandler(data));
+  document.addEventListener('keydown', getKeyDownHandler(data));
+  document.addEventListener('keyup', getKeyUpHandler(data));
 
   var playButton = document.getElementById('play-button');
   playButton.addEventListener('click', function(e) {
