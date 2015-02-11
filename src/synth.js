@@ -28,12 +28,51 @@ var generateNoteMappings = function() {
   return notes;
 };
 
+var processKeys = function(data) {
+  var getClickHandler = function(data, index) {
+    return function(e) {
+      triggerNote(data, index);
+    };
+  };
+  var i = 0;
+  while(i < 18) {
+    var key = document.getElementById('key-' + i);
+    key.addEventListener('mousedown', getClickHandler(data, i));
+    i++;
+  }
+};
+
+var triggerNote = function(data, keyIndex) {
+  if (!data.hasOwnProperty('osc') || data.osc === false) {
+    var osc = data.context.createOscillator();
+    osc.type = osc.SINE;
+    var notes = data.notes;
+    var note = notes[(data.octave * 12) + keyIndex];
+    osc.frequency.value = note.frequency;
+    osc.connect(data.context.destination);
+    osc.start(0);
+    data.osc = osc;
+  }
+};
+
+var getSoundOffHandler = function(data) {
+  return function(e) {
+    if (data.hasOwnProperty('osc') && data.osc !== false) {
+      data.osc.stop(0);
+      data.osc = false;
+    }
+  };
+};
+
 var main = function(context) {
 
   var destination = context.destination;
-  var data = {};
+  var data = {octave: 3, osc: false, context:context};
 
-  var notes = generateNoteMappings();
+  data.notes = generateNoteMappings();
+  processKeys(data);
+
+  document.addEventListener('mouseup', getSoundOffHandler(data));
 
   var playButton = document.getElementById('play-button');
   playButton.addEventListener('click', function(e) {
