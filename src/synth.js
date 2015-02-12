@@ -99,7 +99,9 @@ var getKeyUpHandler = function(data) {
   };
 };
 
-var main = function(context) {
+var main = function() {
+  window.AudioContext = window.AudioContext || window.webkitAudioContext;
+  var context = new AudioContext();
   var destination = context.destination;
   var keyChars = ["A", "W", "S", "E", "D", "F", "T", "G", "Y", "H", "U", "J", "K", "O", "L", "P", ";", "'"];
   var oscillators = keyChars.map(function() { return false; });
@@ -113,10 +115,4 @@ var main = function(context) {
   document.addEventListener('keyup', getKeyUpHandler(data));
 };
 
-window.addEventListener('load', init, false);
-
-function init() {
-  window.AudioContext = window.AudioContext || window.webkitAudioContext;
-  var context = new AudioContext();
-  main(context);
-}
+window.addEventListener('load', main, false);
