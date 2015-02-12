@@ -111,26 +111,6 @@ var main = function(context) {
   document.addEventListener('mouseup', getSoundOffHandler(data));
   document.addEventListener('keydown', getKeyDownHandler(data));
   document.addEventListener('keyup', getKeyUpHandler(data));
-
-  var playButton = document.getElementById('play-button');
-  playButton.addEventListener('click', function(e) {
-    if (!data.hasOwnProperty('osc') || data.osc === false) {
-      var osc = context.createOscillator();
-      osc.type = osc.SINE;
-      osc.frequency.value = 440;
-      osc.connect(destination);
-      osc.start(0);
-      data.osc = osc;
-    }
-  });
-
-  var stopButton = document.getElementById('stop-button');
-  stopButton.addEventListener('click', function(e) {
-    if (data.hasOwnProperty('osc') && data.osc !== false) {
-      data.osc.stop(0);
-      data.osc = false;
-    }
-  });
 };
 
 window.addEventListener('load', init, false);
