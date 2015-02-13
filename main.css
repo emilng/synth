@@ -21,6 +21,12 @@ body {
   width: 380px;
 }
 
+#octave {
+  float: left;
+  width: 200px;
+  margin-top: 10px;
+}
+
 #black-keys {
   float:left;
   margin-top: -97px;
@@ -44,6 +50,17 @@ body {
 #white-keys {
   float:left;
   margin-top: 5px;
+}
+
+#octave-display {
+  float: left;
+  margin-left: 10px;
+}
+
+.octave-arrows {
+  float: left;
+  font-family: 'Entypo';
+  font-size: 30px;
 }
 
 .white-key {
@@ -73,4 +90,18 @@ body {
   padding-top: 30px;
   border-bottom-left-radius: 3px;
   border-bottom-right-radius: 3px;
+}
+
+.octave-key {
+  float: left;
+  background-color: #ddd;
+  color: black;
+  height: 20px;
+  width: 20px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: darkgray;
+  text-align: center;
+  border-radius: 3px;
+  padding-top: 6px;
 }

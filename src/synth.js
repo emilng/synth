@@ -27,7 +27,7 @@ var generateNoteMappings = function() {
   return notes;
 };
 
-var processKeys = function(data) {
+var setupNoteClickHandlers = function(data) {
   var getClickHandler = function(data, index) {
     return function(e) {
       triggerNote(data, index);
@@ -41,17 +41,32 @@ var processKeys = function(data) {
   }
 };
 
+var setupOctaveClickHandlers = function(data) {
+  var getClickHandler = function(data, direction) {
+    return function(e) {
+      updateOctave(data, direction);
+    };
+  };
+  var octaveDown = document.getElementById('octave-down');
+  octaveDown.addEventListener('click', getClickHandler(data, -1));
+  var octaveUp = document.getElementById('octave-up');
+  octaveUp.addEventListener('click', getClickHandler(data, 1));
+};
+
 var triggerNote = function(data, keyIndex) {
   var osc = data.oscillators[keyIndex];
   if (osc === null) {
     osc = data.context.createOscillator();
     osc.type = osc.SINE;
     var notes = data.notes;
-    var note = notes[(data.octave * 12) + keyIndex];
-    osc.frequency.value = note.frequency;
-    osc.connect(data.context.destination);
-    osc.start(0);
-    data.oscillators[keyIndex] = osc;
+    var noteIndex = (data.octave * 12) + keyIndex;
+    if (noteIndex < notes.length - 1) {
+      var note = notes[noteIndex];
+      osc.frequency.value = note.frequency;
+      osc.connect(data.context.destination);
+      osc.start(0);
+      data.oscillators[keyIndex] = osc;
+    }
   }
 };
 
@@ -67,6 +82,12 @@ var soundOff = function(data, keyIndex) {
     data.oscillators[keyIndex].stop(0);
     data.oscillators[keyIndex] = null;
   }
+};
+
+var updateOctave = function(data, direction) {
+  data.octave = Math.max(0, Math.min(6,data.octave + direction));
+  var octaveDisplay = document.getElementById("octave-display");
+  octaveDisplay.innerHTML = "Octave " + data.octave;
 };
 
 var getSoundOffHandler = function(data) {
@@ -89,6 +110,12 @@ var getKeyDownHandler = function(data) {
     var keyIndex = data.keyChars.indexOf(keyChar);
     if (keyIndex > -1) {
       triggerNote(data, keyIndex);
+      e.preventDefault();
+    }
+    if (keyChar === "Z") {
+      updateOctave(data, -1);
+    } else if (keyChar === "X") {
+      updateOctave(data, 1);
     }
   };
 };
@@ -108,7 +135,9 @@ var main = function() {
   var data = {keyChars: keyChars, octave: 3, oscillators: oscillators, context:context};
 
   data.notes = generateNoteMappings();
-  processKeys(data);
+  setupNoteClickHandlers(data);
+  setupOctaveClickHandlers(data);
+  updateOctave(data, 0);
 
   document.addEventListener('mouseup', getSoundOffHandler(data));
   document.addEventListener('keydown', getKeyDownHandler(data));
