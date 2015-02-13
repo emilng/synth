@@ -43,7 +43,7 @@ var processKeys = function(data) {
 
 var triggerNote = function(data, keyIndex) {
   var osc = data.oscillators[keyIndex];
-  if (osc === false) {
+  if (osc === null) {
     osc = data.context.createOscillator();
     osc.type = osc.SINE;
     var notes = data.notes;
@@ -58,14 +58,14 @@ var triggerNote = function(data, keyIndex) {
 var soundOff = function(data, keyIndex) {
   if (keyIndex === undefined) {
     data.oscillators = data.oscillators.map(function(osc) {
-      if (osc !== false) {
+      if (osc !== null) {
         osc.stop();
       }
-      return false;
+      return null;
     });
-  } else if (data.oscillators[keyIndex] !== false) {
+  } else if (data.oscillators[keyIndex] !== null) {
     data.oscillators[keyIndex].stop(0);
-    data.oscillators[keyIndex] = false;
+    data.oscillators[keyIndex] = null;
   }
 };
 
@@ -104,7 +104,7 @@ var main = function() {
   var context = new AudioContext();
   var destination = context.destination;
   var keyChars = ["A", "W", "S", "E", "D", "F", "T", "G", "Y", "H", "U", "J", "K", "O", "L", "P", ";", "'"];
-  var oscillators = keyChars.map(function() { return false; });
+  var oscillators = keyChars.map(function() { return null; });
   var data = {keyChars: keyChars, octave: 3, oscillators: oscillators, context:context};
 
   data.notes = generateNoteMappings();
