@@ -100,6 +100,9 @@ var getKeyDownHandler = function(data) {
   return function(e) {
     var keyCode = e.keyCode;
     var keyChar;
+    if (e.ctrlKey || e.altKey || e.shiftKey || e.metaKey) {
+      return;
+    }
     if (keyCode === 186 || keyCode === 59) {
       keyChar = ";";
     } else if (keyCode === 222 || keyCode === 39) {
