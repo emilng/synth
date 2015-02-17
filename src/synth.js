@@ -54,12 +54,17 @@ var setupOctaveClickHandlers = function(data) {
 };
 
 var triggerNote = function(data, keyIndex) {
+  var octave = data.octave;
+  if (keyIndex >= data.oscillators.length) {
+    octave++;
+    keyIndex = keyIndex - data.oscillators.length;
+  }
   var osc = data.oscillators[keyIndex];
   if (osc === null) {
     osc = data.context.createOscillator();
     osc.type = osc.SINE;
     var notes = data.notes;
-    var noteIndex = (data.octave * 12) + keyIndex;
+    var noteIndex = (octave * 12) + keyIndex;
     if (noteIndex < notes.length - 1) {
       var note = notes[noteIndex];
       osc.frequency.value = note.frequency;
