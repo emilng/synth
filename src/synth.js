@@ -27,6 +27,57 @@ var generateNoteMappings = function() {
   return notes;
 };
 
+var generateKeyboard = function(data) {
+  var keyboard = document.getElementById('full-keyboard');
+  var canvas = document.createElement('canvas');
+  canvas.setAttribute('width', 400);
+  canvas.setAttribute('height', 30);
+  var ctx = canvas.getContext('2d');
+  var offset = 0;
+  var whiteKeyWidth = 6;
+  var blackKeyWidth = 4;
+  var whiteKeyHeight = 22;
+  var blackKeyHeight = 14;
+  var keys = {
+    black: {width: 4, height: 14},
+    white: {width: 6, height: 22}
+  };
+  data.keys = keys;
+  ctx.strokeStyle = '#000';
+  ctx.lineWidth = 1;
+  ctx.fillStyle = '#000';
+  var maxKey = 73;
+  // get offsets
+  data.notes.map(function(note, index) {
+    if (index < maxKey) {
+      if (note.name.length === 1) {
+        note.offset = offset;
+        offset = offset + keys.white.width;
+      } else {
+        note.offset = offset - Math.round(keys.white.width/2) + 1;
+      }
+    }
+  });
+  // draw white keys
+  data.notes.map(function(note, index) {
+    if (index < maxKey) {
+      if (note.name.length === 1) {
+        ctx.strokeRect(note.offset, 0, keys.white.width, keys.white.height);
+      }
+    }
+  });
+  // draw black keys
+  data.notes.map(function(note, index) {
+    if (index < maxKey) {
+      if (note.name.length == 2) {
+        ctx.fillRect(note.offset, 0, keys.black.width, keys.black.height);
+      }
+    }
+  });
+
+  return ctx.getImageData(0, 0, canvas.width, canvas.height);
+};
+
 var setupNoteClickHandlers = function(data) {
   var getClickHandler = function(data, index) {
     return function(e) {
@@ -67,10 +118,12 @@ var triggerNote = function(data, keyIndex) {
     var noteIndex = (octave * 12) + keyIndex;
     if (noteIndex < notes.length - 1) {
       var note = notes[noteIndex];
+      osc.noteIndex = noteIndex;
       osc.frequency.value = note.frequency;
       osc.connect(data.context.destination);
       osc.start(0);
       data.oscillators[keyIndex] = osc;
+      data.notesChanged = true;
     }
   }
 };
@@ -83,9 +136,11 @@ var soundOff = function(data, keyIndex) {
       }
       return null;
     });
+    data.notesChanged = true;
   } else if (data.oscillators[keyIndex] !== null) {
     data.oscillators[keyIndex].stop(0);
     data.oscillators[keyIndex] = null;
+    data.notesChanged = true;
   }
 };
 
@@ -134,18 +189,56 @@ var getKeyUpHandler = function(data) {
   };
 };
 
+var updateKeyboard = function(data) {
+  var canvas = document.getElementById('full-keyboard');
+  var ctx = canvas.getContext('2d');
+  ctx.putImageData(data.keyboard, 0, 0);
+  var keys = data.keys;
+  ctx.fillStyle = 'rgba(140,140,140,0.8)';
+  data.oscillators.map(function(osc) {
+    if (osc !== null) {
+      var note = data.notes[osc.noteIndex];
+      if (note.name.length === 1) {
+        ctx.fillRect(note.offset, 0, keys.white.width, keys.white.height);
+      } else {
+        ctx.fillRect(note.offset, 0, keys.black.width, keys.black.height);
+      }
+    }
+  });
+};
+
+var getUpdateHandler = function(data) {
+  var update = function() {
+    if (data.notesChanged) {
+      updateKeyboard(data);
+      data.notesChanged = false;
+    }
+    requestAnimationFrame(update);
+  };
+  return update;
+};
+
 var main = function() {
   window.AudioContext = window.AudioContext || window.webkitAudioContext;
   var context = new AudioContext();
   var destination = context.destination;
   var keyChars = ["A", "W", "S", "E", "D", "F", "T", "G", "Y", "H", "U", "J", "K", "O", "L", "P", ";", "'"];
   var oscillators = keyChars.map(function() { return null; });
-  var data = {keyChars: keyChars, octave: 3, oscillators: oscillators, context:context};
+  var data = {
+    keyChars: keyChars,
+    octave: 3,
+    oscillators: oscillators,
+    context:context,
+    notesChanged: true
+  };
 
   data.notes = generateNoteMappings();
+  data.keyboard = generateKeyboard(data);
   setupNoteClickHandlers(data);
   setupOctaveClickHandlers(data);
   updateOctave(data, 0);
+  var update = getUpdateHandler(data);
+  requestAnimationFrame(update);
 
   document.addEventListener('mouseup', getSoundOffHandler(data));
   document.addEventListener('keydown', getKeyDownHandler(data));
