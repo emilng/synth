@@ -33,45 +33,39 @@ var generateKeyboard = function(data) {
   canvas.setAttribute('width', 400);
   canvas.setAttribute('height', 30);
   var ctx = canvas.getContext('2d');
-  var offset = 0;
-  var keys = {
+  var keyDimensions = data.ui.keyDimensions = {
     black: {width: 4, height: 14},
     white: {width: 6, height: 22}
   };
-  var halfWhiteKeyWidth = Math.round(keys.white.width/2);
-  data.keys = keys;
+  var halfWhiteKeyWidth = Math.round(keyDimensions.white.width/2);
   ctx.strokeStyle = '#000';
   ctx.lineWidth = 1;
   ctx.fillStyle = '#000';
   var maxKey = 87;
+  var offset = 0;
+  var notes = data.sound.notes;
+  var offsets = data.ui.keyOffsets;
   // get offsets
-  data.notes.map(function(note, index) {
-    if (index < maxKey) {
-      if (note.name.length === 1) {
-        note.offset = offset;
-        offset = offset + keys.white.width;
-      } else {
-        note.offset = offset - halfWhiteKeyWidth + 1;
-      }
+  for (var i = 0; i < maxKey; i++) {
+    if (notes[i].name.length === 1) {
+      offsets.push(offset);
+      offset = offset + keyDimensions.white.width;
+    } else {
+      offsets.push(offset - halfWhiteKeyWidth + 1);
     }
-  });
-  // draw white keys
-  data.notes.map(function(note, index) {
-    if (index < maxKey) {
-      if (note.name.length === 1) {
-        ctx.strokeRect(note.offset, 0, keys.white.width, keys.white.height);
-      }
+  }
+  // draw white keys. white keys have to be drawn before black keys
+  offsets.map(function(offset, index) {
+    if (notes[index].name.length === 1) {
+      ctx.strokeRect(offset, 0, keyDimensions.white.width, keyDimensions.white.height);
     }
   });
   // draw black keys
-  data.notes.map(function(note, index) {
-    if (index < maxKey) {
-      if (note.name.length == 2) {
-        ctx.fillRect(note.offset, 0, keys.black.width, keys.black.height);
-      }
+  offsets.map(function(offset, index) {
+    if (notes[index].name.length === 2) {
+      ctx.fillRect(offset, 0, keyDimensions.black.width, keyDimensions.black.height);
     }
   });
-
   return ctx.getImageData(0, 0, canvas.width, canvas.height);
 };
 
@@ -102,49 +96,52 @@ var setupOctaveClickHandlers = function(data) {
 };
 
 var triggerNote = function(data, keyIndex) {
-  var octave = data.octave;
-  if (keyIndex >= data.oscillators.length) {
+  var sound = data.sound;
+  var octave = sound.octave;
+  if (keyIndex >= sound.oscillators.length) {
     octave++;
-    keyIndex = keyIndex - data.oscillators.length;
+    keyIndex = keyIndex - sound.oscillators.length;
   }
-  var osc = data.oscillators[keyIndex];
+  var osc = sound.oscillators[keyIndex];
   if (osc === null) {
-    osc = data.context.createOscillator();
+    osc = sound.context.createOscillator();
     osc.type = osc.SINE;
-    var notes = data.notes;
+    var notes = sound.notes;
     var noteIndex = (octave * 12) + keyIndex;
     if (noteIndex < notes.length - 1) {
       var note = notes[noteIndex];
       osc.noteIndex = noteIndex;
       osc.frequency.value = note.frequency;
-      osc.connect(data.context.destination);
+      osc.connect(sound.context.destination);
       osc.start(0);
-      data.oscillators[keyIndex] = osc;
+      sound.oscillators[keyIndex] = osc;
       data.notesChanged = true;
     }
   }
 };
 
 var soundOff = function(data, keyIndex) {
+  var sound = data.sound;
   if (keyIndex === undefined) {
-    data.oscillators = data.oscillators.map(function(osc) {
+    sound.oscillators = sound.oscillators.map(function(osc) {
       if (osc !== null) {
         osc.stop();
       }
       return null;
     });
     data.notesChanged = true;
-  } else if (data.oscillators[keyIndex] !== null) {
-    data.oscillators[keyIndex].stop(0);
-    data.oscillators[keyIndex] = null;
+  } else if (sound.oscillators[keyIndex] !== null) {
+    sound.oscillators[keyIndex].stop(0);
+    sound.oscillators[keyIndex] = null;
     data.notesChanged = true;
   }
 };
 
 var updateOctave = function(data, direction) {
-  data.octave = Math.max(0, Math.min(6,data.octave + direction));
+  var sound = data.sound;
+  sound.octave = Math.max(0, Math.min(6,sound.octave + direction));
   var octaveDisplay = document.getElementById("octave-display");
-  octaveDisplay.innerHTML = "Octave " + data.octave;
+  octaveDisplay.innerHTML = "Octave " + sound.octave;
 };
 
 var getSoundOffHandler = function(data) {
@@ -168,7 +165,7 @@ var getKeyDownHandler = function(data) {
     } else {
       keyChar = String.fromCharCode(e.keyCode);
     }
-    var keyIndex = data.keyChars.indexOf(keyChar);
+    var keyIndex = data.ui.keyChars.indexOf(keyChar);
     if (keyIndex > -1) {
       triggerNote(data, keyIndex);
       e.preventDefault();
@@ -188,17 +185,20 @@ var getKeyUpHandler = function(data) {
 };
 
 var updateKeyboard = function(data) {
+  var sound = data.sound;
+  var ui = data.ui;
   var canvas = document.getElementById('full-keyboard');
   var ctx = canvas.getContext('2d');
-  ctx.putImageData(data.keyboard, 0, 0);
+  ctx.putImageData(ui.keyboard, 0, 0);
   var keys = data.keys;
   ctx.fillStyle = 'rgba(140,140,140,0.8)';
-  data.oscillators.map(function(osc, index) {
+  sound.oscillators.map(function(osc, index) {
     var key = document.getElementById('key-' + index);
-    var note = data.notes[data.octave * 12 + index];
+    var offset = ui.keyOffsets[sound.octave * 12 + index];
+    var note = sound.notes[sound.octave * 12 + index];
     var keyType = (note.name.length === 1) ? 'white' : 'black';
     if (osc !== null) {
-        ctx.fillRect(note.offset, 0, keys[keyType].width, keys[keyType].height);
+        ctx.fillRect(offset, 0, ui.keyDimensions[keyType].width, ui.keyDimensions[keyType].height);
         key.setAttribute('class', 'down-' + keyType + '-key');
     } else {
       key.setAttribute('class', keyType + '-key');
@@ -220,19 +220,26 @@ var getUpdateHandler = function(data) {
 var main = function() {
   window.AudioContext = window.AudioContext || window.webkitAudioContext;
   var context = new AudioContext();
-  var destination = context.destination;
   var keyChars = ["A", "W", "S", "E", "D", "F", "T", "G", "Y", "H", "U", "J", "K", "O", "L", "P", ";", "'"];
   var oscillators = keyChars.map(function() { return null; });
   var data = {
-    keyChars: keyChars,
-    octave: 3,
-    oscillators: oscillators,
-    context:context,
+    sound: {
+      context:context,
+      oscillators: oscillators,
+      octave: 3,
+      notes: null
+    },
+    ui: {
+      keyChars: keyChars,
+      keyboard: null,
+      keyDimensions: null,
+      keyOffsets: []
+    },
     notesChanged: true
   };
 
-  data.notes = generateNoteMappings();
-  data.keyboard = generateKeyboard(data);
+  data.sound.notes = generateNoteMappings();
+  data.ui.keyboard = generateKeyboard(data);
   setupNoteClickHandlers(data);
   setupOctaveClickHandlers(data);
   updateOctave(data, 0);
