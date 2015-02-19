@@ -77,9 +77,39 @@ body {
   border-bottom-right-radius: 3px;
 }
 
+.down-white-key {
+  float:left;
+  height: 25px;
+  width: 30px;
+  border-style: solid;
+  border-width: 1px;
+  vertical-align: bottom;
+  background-color: #DDD;
+  border-color: darkgray;
+  text-align: center;
+  padding-top: 70px;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+
 .black-key {
   float:left;
   background-color: black;
+  color: white;
+  height: 20px;
+  width: 30px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: lightgray;
+  text-align: center;
+  padding-top: 30px;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+
+.down-black-key {
+  float:left;
+  background-color: #555;
   color: white;
   height: 20px;
   width: 30px;

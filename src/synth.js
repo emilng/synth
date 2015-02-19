@@ -193,14 +193,15 @@ var updateKeyboard = function(data) {
   ctx.putImageData(data.keyboard, 0, 0);
   var keys = data.keys;
   ctx.fillStyle = 'rgba(140,140,140,0.8)';
-  data.oscillators.map(function(osc) {
+  data.oscillators.map(function(osc, index) {
+    var key = document.getElementById('key-' + index);
+    var note = data.notes[data.octave * 12 + index];
+    var keyType = (note.name.length === 1) ? 'white' : 'black';
     if (osc !== null) {
-      var note = data.notes[osc.noteIndex];
-      if (note.name.length === 1) {
-        ctx.fillRect(note.offset, 0, keys.white.width, keys.white.height);
-      } else {
-        ctx.fillRect(note.offset, 0, keys.black.width, keys.black.height);
-      }
+        ctx.fillRect(note.offset, 0, keys[keyType].width, keys[keyType].height);
+        key.setAttribute('class', 'down-' + keyType + '-key');
+    } else {
+      key.setAttribute('class', keyType + '-key');
     }
   });
 };
