@@ -34,19 +34,16 @@ var generateKeyboard = function(data) {
   canvas.setAttribute('height', 30);
   var ctx = canvas.getContext('2d');
   var offset = 0;
-  var whiteKeyWidth = 6;
-  var blackKeyWidth = 4;
-  var whiteKeyHeight = 22;
-  var blackKeyHeight = 14;
   var keys = {
     black: {width: 4, height: 14},
     white: {width: 6, height: 22}
   };
+  var halfWhiteKeyWidth = Math.round(keys.white.width/2);
   data.keys = keys;
   ctx.strokeStyle = '#000';
   ctx.lineWidth = 1;
   ctx.fillStyle = '#000';
-  var maxKey = 73;
+  var maxKey = 87;
   // get offsets
   data.notes.map(function(note, index) {
     if (index < maxKey) {
@@ -54,7 +51,7 @@ var generateKeyboard = function(data) {
         note.offset = offset;
         offset = offset + keys.white.width;
       } else {
-        note.offset = offset - Math.round(keys.white.width/2) + 1;
+        note.offset = offset - halfWhiteKeyWidth + 1;
       }
     }
   });
@@ -163,6 +160,7 @@ var getKeyDownHandler = function(data) {
     if (e.ctrlKey || e.altKey || e.shiftKey || e.metaKey) {
       return;
     }
+    // there 2 separate keycodes for semicolon and single quote because browsers
     if (keyCode === 186 || keyCode === 59) {
       keyChar = ";";
     } else if (keyCode === 222 || keyCode === 39) {
