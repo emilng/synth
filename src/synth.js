@@ -118,7 +118,7 @@ var triggerNote = function(data, keyIndex) {
       osc.type = osc.SINE;
       osc.noteIndex = noteIndex;
       osc.frequency.value = note.frequency;
-      osc.start();
+      osc.start(now);
       gainNode.gain.cancelScheduledValues(now);
       gainNode.gain.setValueAtTime(0, now);
       gainNode.gain.setTargetAtTime(1, now, 0.1);
