@@ -127,6 +127,12 @@ var triggerNote = function(data, keyIndex) {
   }
 };
 
+var triggerChord = function(data, keyIndex) {
+  triggerNote(data, keyIndex);
+  triggerNote(data, keyIndex + 4);
+  triggerNote(data, keyIndex + 7);
+};
+
 var soundOff = function(data, keyIndex) {
   var sound = data.sound;
   var now = sound.context.currentTime;
@@ -185,6 +191,7 @@ var getKeyDownHandler = function(data) {
     var keyIndex = getKeyIndex(data, keyCode);
     if (keyIndex > -1) {
       triggerNote(data, keyIndex);
+      // triggerChord(data, keyIndex);
       e.preventDefault();
     }
     var keyChar = String.fromCharCode(keyCode);
@@ -204,6 +211,10 @@ var getKeyUpHandler = function(data) {
     }
   };
 };
+
+var getScales = function() {
+  return {
+    major: 'ttsttts'
   };
 };
 
