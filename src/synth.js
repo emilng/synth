@@ -98,23 +98,30 @@ var setupOctaveClickHandlers = function(data) {
 var triggerNote = function(data, keyIndex) {
   var sound = data.sound;
   var octave = sound.octave;
-  if (keyIndex >= sound.oscillators.length) {
+  if (keyIndex >= sound.activeNotes.length) {
     octave++;
-    keyIndex = keyIndex - sound.oscillators.length;
+    keyIndex = keyIndex - sound.activeNotes.length;
   }
-  var osc = sound.oscillators[keyIndex];
-  if (osc === null) {
-    osc = sound.context.createOscillator();
-    osc.type = osc.SINE;
+  var isNoteActive = sound.activeNotes[keyIndex];
+  if (!isNoteActive) {
+    var now = sound.context.currentTime;
+    sound.activeNotes[keyIndex] = true;
     var notes = sound.notes;
     var noteIndex = (octave * 12) + keyIndex;
     if (noteIndex < notes.length - 1) {
       var note = notes[noteIndex];
+      var osc = sound.context.createOscillator();
+      var gainNode = sound.context.createGain();
+      sound.gainNodes[keyIndex] = gainNode;
+      osc.connect(gainNode);
+      gainNode.connect(sound.masterGain);
+      osc.type = osc.SINE;
       osc.noteIndex = noteIndex;
       osc.frequency.value = note.frequency;
-      osc.connect(sound.context.destination);
-      osc.start(0);
-      sound.oscillators[keyIndex] = osc;
+      osc.start();
+      gainNode.gain.cancelScheduledValues(now);
+      gainNode.gain.setValueAtTime(0, now);
+      gainNode.gain.setTargetAtTime(1, now, 0.1);
       data.notesChanged = true;
     }
   }
@@ -122,17 +129,24 @@ var triggerNote = function(data, keyIndex) {
 
 var soundOff = function(data, keyIndex) {
   var sound = data.sound;
-  if (keyIndex === undefined) {
-    sound.oscillators = sound.oscillators.map(function(osc) {
-      if (osc !== null) {
-        osc.stop();
-      }
-      return null;
-    });
+  var now = sound.context.currentTime;
+  var isNoteActive = ((keyIndex !== undefined) && (sound.activeNotes[keyIndex] === true));
+  if (isNoteActive) {
+    var gainNode = sound.gainNodes[keyIndex];
+    gainNode.gain.cancelScheduledValues(now);
+    gainNode.gain.setTargetAtTime(0, now, 0.1);
+    sound.activeNotes[keyIndex] = false;
     data.notesChanged = true;
-  } else if (sound.oscillators[keyIndex] !== null) {
-    sound.oscillators[keyIndex].stop(0);
-    sound.oscillators[keyIndex] = null;
+  } else {
+    sound.activeNotes = sound.activeNotes.map(function(isNoteActive, index) {
+      if (isNoteActive) {
+        var gainNode = sound.gainNodes[index];
+        gainNode.gain.cancelScheduledValues(now);
+        gainNode.gain.setTargetAtTime(0, now, 0.1);
+        sound.activeNotes[keyIndex] = false;
+      }
+      return false;
+    });
     data.notesChanged = true;
   }
 };
@@ -201,12 +215,12 @@ var updateKeyboard = function(data) {
   ctx.putImageData(ui.keyboard, 0, 0);
   var keys = data.keys;
   ctx.fillStyle = 'rgba(140,140,140,0.8)';
-  sound.oscillators.map(function(osc, index) {
+  sound.activeNotes.map(function(isNoteActive, index) {
     var key = document.getElementById('key-' + index);
     var offset = ui.keyOffsets[sound.octave * 12 + index];
     var note = sound.notes[sound.octave * 12 + index];
     var keyType = (note.name.length === 1) ? 'white' : 'black';
-    if (osc !== null) {
+    if (isNoteActive) {
         ctx.fillRect(offset, 0, ui.keyDimensions[keyType].width, ui.keyDimensions[keyType].height);
         key.setAttribute('class', 'down-' + keyType + '-key');
     } else {
@@ -230,13 +244,21 @@ var main = function() {
   window.AudioContext = window.AudioContext || window.webkitAudioContext;
   var context = new AudioContext();
   var keyChars = ["A", "W", "S", "E", "D", "F", "T", "G", "Y", "H", "U", "J", "K", "O", "L", "P", ";", "'"];
-  var oscillators = keyChars.map(function() { return null; });
+  var gainNodes = keyChars.map(function() { return context.createGain(); });
+  var activeNotes = keyChars.map(function() { return false; });
+  var masterGain = context.createGain();
+  masterGain.gain.value = 0.5;
+  var compressor = context.createDynamicsCompressor();
+  masterGain.connect(compressor);
+  compressor.connect(context.destination);
   var data = {
     sound: {
       context:context,
-      oscillators: oscillators,
+      gainNodes: [],
+      masterGain: masterGain,
       octave: 3,
-      notes: null
+      notes: null,
+      activeNotes: activeNotes
     },
     ui: {
       keyChars: keyChars,
