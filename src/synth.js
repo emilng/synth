@@ -150,26 +150,30 @@ var getSoundOffHandler = function(data) {
   };
 };
 
-var getKeyDownHandler = function(data) {
-  return function(e) {
-    var keyCode = e.keyCode;
-    var keyChar;
-    if (e.ctrlKey || e.altKey || e.shiftKey || e.metaKey) {
-      return;
-    }
+var getKeyIndex = function(data, keyCode) {
     // there 2 separate keycodes for semicolon and single quote because browsers
     if (keyCode === 186 || keyCode === 59) {
       keyChar = ";";
     } else if (keyCode === 222 || keyCode === 39) {
       keyChar = "'";
     } else {
-      keyChar = String.fromCharCode(e.keyCode);
+      keyChar = String.fromCharCode(keyCode);
     }
-    var keyIndex = data.ui.keyChars.indexOf(keyChar);
+    return data.ui.keyChars.indexOf(keyChar);
+};
+
+var getKeyDownHandler = function(data) {
+  return function(e) {
+    var keyCode = e.keyCode;
+    if (e.ctrlKey || e.altKey || e.shiftKey || e.metaKey) {
+      return;
+    }
+    var keyIndex = getKeyIndex(data, keyCode);
     if (keyIndex > -1) {
       triggerNote(data, keyIndex);
       e.preventDefault();
     }
+    var keyChar = String.fromCharCode(keyCode);
     if (keyChar === "Z") {
       updateOctave(data, -1);
     } else if (keyChar === "X") {
@@ -180,7 +184,12 @@ var getKeyDownHandler = function(data) {
 
 var getKeyUpHandler = function(data) {
   return function(e) {
-    soundOff(data);
+    var keyIndex = getKeyIndex(data, e.keyCode);
+    if (keyIndex > -1) {
+      soundOff(data, keyIndex);
+    }
+  };
+};
   };
 };
 
