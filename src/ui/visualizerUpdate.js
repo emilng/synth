@@ -1,5 +1,5 @@
 // visualizer code based off of https://github.com/mdn/voice-change-o-matic/blob/gh-pages/scripts/app.js#L123-L167
-var getVisualizerUpdateHandler= function(data) {
+var getVisualizerUpdateHandler = function(data) {
   var visualizer = data.ui.visualizer;
   var analyser = data.audio.analyser;
   analyser.fftSize = 2048;
