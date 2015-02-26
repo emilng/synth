@@ -15,6 +15,7 @@ body {
 #transport-controls {
   font-family: 'Entypo';
   font-size: 30;
+  display: none;
 }
 
 #keyboard {
