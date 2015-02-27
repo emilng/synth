@@ -12,7 +12,7 @@ var clickHandlers = require('./ui/clickHandlers.js');
 var keyHandlers = require('./ui/keyHandlers');
 
 // ui update
-var updateKeyboard = require('./ui/keyboardUpdate.js');
+var updateKeyboard = require('./ui/updateKeyboard.js');
 var getDrawVisualizerHandler = require('./ui/drawVisualizer.js');
 
 var getUpdateHandler = function(data) {
