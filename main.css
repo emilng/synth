@@ -58,6 +58,12 @@ body {
   margin-left: 10px;
 }
 
+.column {
+  float: left;
+  margin-left: 10px;
+  margin-top: 10px;
+}
+
 .octave-arrows {
   float: left;
   font-family: 'Entypo';

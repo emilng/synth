@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title></title>
+  <title>Synth</title>
   <link rel="stylesheet" type="text/css" href="main.css">
 </head>
 <body>
@@ -9,48 +9,57 @@
     <button id="stop-button">&#9632;</button>
     <button id="play-button">&#9654;</button>
   </div>
-  <div>
-    <canvas id="visualizer" width="400" height="150"></canvas>
-  </div>
-  <div>
-    <canvas id="full-keyboard" width="400" height="30"></canvas>
-  </div>
-  <div id="keyboard">
-    <div id="white-keys">
-      <div id="key-0" class="white-key">A</div>
-      <div id="key-2" class="white-key">S</div>
-      <div id="key-4" class="white-key">D</div>
-      <div id="key-5" class="white-key">F</div>
-      <div id="key-7" class="white-key">G</div>
-      <div id="key-9" class="white-key">H</div>
-      <div id="key-11" class="white-key">J</div>
-      <div id="key-12" class="white-key">K</div>
-      <div id="key-14" class="white-key">L</div>
-      <div id="key-16" class="white-key">&#59;</div>
-      <div id="key-17" class="white-key">&#39;</div>
+  <div class="column">
+    <div>
+      <canvas id="visualizer" width="400" height="150"></canvas>
     </div>
-    <div id="black-keys">
-      <div id="black-keys-0">
-        <div id="key-1" class="black-key">W</div>
-        <div id="key-3" class="black-key">E</div>
+    <div id="key-control">
+      <div>
+        <canvas id="full-keyboard" width="400" height="30"></canvas>
       </div>
-      <div id="black-keys-1">
-        <div id="key-6" class="black-key">T</div>
-        <div id="key-8" class="black-key">Y</div>
-        <div id="key-10" class="black-key">U</div>
+      <div id="keyboard">
+        <div id="white-keys">
+          <div id="key-0" class="white-key">A</div>
+          <div id="key-2" class="white-key">S</div>
+          <div id="key-4" class="white-key">D</div>
+          <div id="key-5" class="white-key">F</div>
+          <div id="key-7" class="white-key">G</div>
+          <div id="key-9" class="white-key">H</div>
+          <div id="key-11" class="white-key">J</div>
+          <div id="key-12" class="white-key">K</div>
+          <div id="key-14" class="white-key">L</div>
+          <div id="key-16" class="white-key">&#59;</div>
+          <div id="key-17" class="white-key">&#39;</div>
+        </div>
+        <div id="black-keys">
+          <div id="black-keys-0">
+            <div id="key-1" class="black-key">W</div>
+            <div id="key-3" class="black-key">E</div>
+          </div>
+          <div id="black-keys-1">
+            <div id="key-6" class="black-key">T</div>
+            <div id="key-8" class="black-key">Y</div>
+            <div id="key-10" class="black-key">U</div>
+          </div>
+          <div id="black-keys-2">
+            <div id="key-13" class="black-key">O</div>
+            <div id="key-15" class="black-key">P</div>
+          </div>
+        </div>
       </div>
-      <div id="black-keys-2">
-        <div id="key-13" class="black-key">O</div>
-        <div id="key-15" class="black-key">P</div>
+      <div id="octave">
+        <div class="octave-arrows">&#9666;</div>
+        <div id="octave-down" class="octave-key">Z</div>
+        <div id="octave-up" class="octave-key">X</div>
+        <div class="octave-arrows">&#9656;</div>
+        <div id="octave-display"></div>
       </div>
     </div>
   </div>
-  <div id="octave">
-    <div class="octave-arrows">&#9666;</div>
-    <div id="octave-down" class="octave-key">Z</div>
-    <div id="octave-up" class="octave-key">X</div>
-    <div class="octave-arrows">&#9656;</div>
-    <div id="octave-display"></div>
+  <div class="column">
+    <div>
+      <canvas id="envelope" width="400" height="150"></canvas>
+    </div>
   </div>
   <script type="text/javascript" src="dist/synth.min.js"></script>
 </body>
