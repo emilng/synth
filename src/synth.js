@@ -33,7 +33,6 @@ var main = function() {
   window.AudioContext = window.AudioContext || window.webkitAudioContext;
   var context = new AudioContext();
   var keyChars = ["A", "W", "S", "E", "D", "F", "T", "G", "Y", "H", "U", "J", "K", "O", "L", "P", ";", "'"];
-  var gainNodes = keyChars.map(function() { return context.createGain(); });
   var activeNotes = keyChars.map(function() { return false; });
   var masterGain = context.createGain();
   masterGain.gain.value = 0.5;
