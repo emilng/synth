@@ -13,16 +13,16 @@ var keyHandlers = require('./ui/keyHandlers');
 
 // ui update
 var updateKeyboard = require('./ui/keyboardUpdate.js');
-var getVisualizerUpdateHandler = require('./ui/visualizerUpdate.js');
+var getDrawVisualizerHandler = require('./ui/drawVisualizer.js');
 
 var getUpdateHandler = function(data) {
-  var updateVisualizer = getVisualizerUpdateHandler(data);
+  var drawVisualizer = getDrawVisualizerHandler(data);
   var update = function() {
     if (data.notesChanged) {
       updateKeyboard(data);
       data.notesChanged = false;
     }
-    updateVisualizer();
+    drawVisualizer();
 
     requestAnimationFrame(update);
   };
@@ -42,7 +42,6 @@ var main = function() {
   masterGain.connect(compressor);
   compressor.connect(analyser);
   analyser.connect(context.destination);
-  var visualizer = document.getElementById('visualizer');
   var data = {
     audio: {
       context:context,
@@ -58,7 +57,6 @@ var main = function() {
       keyboard: null,
       keyDimensions: null,
       keyOffsets: [],
-      visualizer: visualizer
     },
     notesChanged: true
   };

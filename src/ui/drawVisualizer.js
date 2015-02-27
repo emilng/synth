@@ -1,6 +1,6 @@
 // visualizer code based off of https://github.com/mdn/voice-change-o-matic/blob/gh-pages/scripts/app.js#L123-L167
-var getVisualizerUpdateHandler = function(data) {
-  var visualizer = data.ui.visualizer;
+var getDrawVisualizerHandler = function(data) {
+  var visualizer = document.getElementById('visualizer');
   var analyser = data.audio.analyser;
   analyser.fftSize = 2048;
   var bufferLength = analyser.fftSize;
@@ -10,10 +10,10 @@ var getVisualizerUpdateHandler = function(data) {
   var width = visualizer.width;
   var height = visualizer.height;
 
-  var updateVisualizer = function() {
+  var drawVisualizer = function() {
     analyser.getByteTimeDomainData(dataArray);
     ctx.clearRect(0, 0, width, height);
-    ctx.fillStyle = 'rgb(200, 200, 200)';
+    ctx.fillStyle = '#EEE';
     ctx.fillRect(0, 0, width, height);
     ctx.beginPath();
 
@@ -33,7 +33,7 @@ var getVisualizerUpdateHandler = function(data) {
     ctx.lineTo(width, height/2);
     ctx.stroke();
   };
-  return updateVisualizer;
+  return drawVisualizer;
 };
 
-module.exports = getVisualizerUpdateHandler;
+module.exports = getDrawVisualizerHandler;
