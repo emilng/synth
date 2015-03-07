@@ -1,8 +1,8 @@
 var initKeyboard = function(data) {
   var keyboard = document.getElementById('full-keyboard');
   var canvas = document.createElement('canvas');
-  canvas.setAttribute('width', 400);
-  canvas.setAttribute('height', 30);
+  canvas.width = 400;
+  canvas.height = 30;
   var ctx = canvas.getContext('2d');
   var keyDimensions = data.ui.keyDimensions = {
     black: {width: 4, height: 14},
