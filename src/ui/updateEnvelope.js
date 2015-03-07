@@ -3,6 +3,7 @@ var updateEnvelope = function(data) {
   var envelopeData = data.ui.envelope;
 
   var envelopeSvg = document.getElementById('svg-envelope');
+  var boundRect = envelopeSvg.getBoundingClientRect();
   var width = envelopeSvg.getAttributeNS(null, 'width');
   var height = envelopeSvg.getAttributeNS(null, 'height');
 
@@ -30,7 +31,8 @@ var updateEnvelope = function(data) {
 
     var timeDragHandler = function(e) {
       var x = parseInt(params.timeRect.getAttributeNS(null, 'x'), 10);
-      var newX = between(e.offsetX - (params.previousX + minSpacing), 0, maxSpacing);
+      var xOffset = e.clientX - boundRect.left;
+      var newX = between(xOffset - (params.previousX + minSpacing), 0, maxSpacing);
       var paramTime = newX/maxSpacing;
       audioEnvelope[params.name + 'Time'] = paramTime;
       data.envelopeChanged = true;
