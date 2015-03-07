@@ -58,7 +58,83 @@
   </div>
   <div class="column">
     <div>
-      <canvas id="envelope" width="400" height="150"></canvas>
+      <svg id="svg-envelope"
+        width="400" height="150" stroke-width="2"
+        unselectable="on" onselectstart="return false;">
+        <rect x="0" y="0" width="400" height="400"
+          fill="#EEE"/>
+        <g id="envelope-bounds" stroke="black" stroke-opacity="0.1">
+          <line id="envelope-bound-top"
+            x1="0" y1="20" x2="400" y2="20"/>
+          <line id="envelope-bound-bottom"
+            x1="0" y1="130" x2="400" y2="130"/>
+          <line id="envelope-bound-left"
+            x1="25" y1="0" x2="25" y2="150"/>
+          <line id="envelope-bound-right"
+            x1="375" y1="0" x2="375" y2="150"/>
+        </g>
+        <g id="envelope-values" stroke-linecap="round">
+          <line id="envelope-delay-value"
+            x1="25" y1="130" x2="45" y2="130" stroke="limegreen"/>
+          <line id="envelope-attack-value"
+            x1="45" y1="130" x2="65" y2="20" stroke="crimson"/>
+          <line id="envelope-decay-value"
+            x1="65" y1="20" x2="85" y2="75" stroke="orange"/>
+          <line id="envelope-sustain-value"
+            x1="85" y1="75" x2="300" y2="75" stroke="steelblue"/>
+          <line id="envelope-release-value"
+            x1="300" y1="75" x2="320" y2="130" stroke="darkorchid"/>
+        </g>
+        <g id="envelope-times" stroke-dasharray="7,3">
+          <line id="envelope-delay-time"
+            x1="45" y1="0" x2="45" y2="150" stroke="limegreen"/>
+          <line id="envelope-attack-time"
+            x1="65" y1="0" x2="65" y2="150" stroke="crimson"/>
+          <line id="envelope-decay-time"
+            x1="85" y1="0" x2="85" y2="150" stroke="orange"/>
+          <line id="envelope-sustain-time"
+            x1="300" y1="0" x2="300" y2="150"
+            stroke="black" stroke-dasharray="0" stroke-opacity="0.1"/>
+          <line id="envelope-release-time"
+            x1="320" y1="0" x2="320" y2="150" stroke="darkorchid"/>
+        </g>
+        <g id="envelope-labels">
+          <text id="envelope-delay-label"
+            x="28" y="142" fill="limegreen">D</text>
+          <text id="envelope-attack-label"
+            x="48" y="142" fill="crimson">A</text>
+          <text id="envelope-decay-label"
+            x="68" y="142" fill="orange">D</text>
+          <text id="envelope-sustain-label"
+            x="88" y="142" fill="steelblue">S</text>
+          <text id="envelope-release-label"
+            x="303" y="142" fill="darkorchid">R</text>
+        </g>
+        <g id="envelope-time-rects" fill="black" fill-opacity="0">
+          <rect id="envelope-delay-time-rect"
+            x="40" y="0" width="10" height="400"/>
+          <rect id="envelope-attack-time-rect"
+            x="45" y="0" width="10" height="400"/>
+          <rect id="envelope-decay-time-rect"
+            x="65" y="0" width="10" height="400"/>
+          <rect id="envelope-sustain-time-rect"
+            x="85" y="0" width="10" height="400"/>
+          <rect id="envelope-release-time-rect"
+            x="300" y="0" width="10" height="400"/>
+        </g>
+        <g id="envelope-value-time-rects">
+          <rect id="envelope-delay-value-time-rect"
+            x="40" y="0" width="10" height="10" fill="limegreen"/>
+          <rect id="envelope-attack-value-time-rect"
+            x="45" y="0" width="10" height="10" fill="crimson"/>
+          <rect id="envelope-decay-value-time-rect"
+            x="65" y="0" width="10" height="10" fill="orange"/>
+          <rect id="envelope-sustain-value-time-rect"
+            x="85" y="0" width="10" height="10" fill="steelblue"/>
+          <rect id="envelope-release-value-time-rect"
+            x="300" y="0" width="10" height="10" fill="darkorchid"/>
+        </g>
+      </svg>
     </div>
   </div>
   <script type="text/javascript" src="dist/synth.min.js"></script>
