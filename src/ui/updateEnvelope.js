@@ -47,7 +47,9 @@ var updateEnvelope = function(data) {
         audioEnvelope.decayValue = paramValue;
         audioEnvelope.sustainValue = paramValue;
       }
-      timeDragHandler(e);
+      if (params.name !== 'sustain') {
+        timeDragHandler(e);
+      }
       data.envelopeChanged = true;
     };
 
@@ -96,9 +98,11 @@ var updateEnvelope = function(data) {
       params.timeRect.addEventListener('mouseover', overTime);
       params.timeRect.addEventListener('mouseleave', leaveTime);
     }
-    params.valueTimeRect.addEventListener('mousedown', startValueTimeDrag);
-    params.valueTimeRect.addEventListener('mouseover', overValueTime);
-    params.valueTimeRect.addEventListener('mouseleave', leaveValueTime);
+    if (params.name !== 'release') {
+      params.valueTimeRect.addEventListener('mousedown', startValueTimeDrag);
+      params.valueTimeRect.addEventListener('mouseover', overValueTime);
+      params.valueTimeRect.addEventListener('mouseleave', leaveValueTime);
+    }
   };
 
   var params = propNames.reduce(function(params, name) {
@@ -140,7 +144,7 @@ var updateEnvelope = function(data) {
     rect.setAttributeNS(null, 'height', height);
   };
 
-  params.forEach(function(param, index) {
+  params.forEach(function(param) {
     var currentY = bottomY - (audioEnvelope[param.value] * drawHeight);
     var currentX = previousX + minSpacing + (audioEnvelope[param.time] * maxSpacing);
     param.previousX = previousX;
@@ -148,8 +152,12 @@ var updateEnvelope = function(data) {
     updateLine(param.valueLine, previousX, previousY, currentX, currentY);
     updateLine(param.timeLine, currentX, 0, currentX, height);
     updateLabel(param.label, previousX + 3, bottomY + 12);
-    updateRect(param.timeRect, currentX - 5, 0, 10, height);
-    updateRect(param.valueTimeRect, currentX - 5, currentY - 5, 10, 10);
+    if (param.name !== 'sustain') {
+      updateRect(param.timeRect, currentX - 5, 0, 10, height);
+    }
+    if (param.name !== 'release') {
+      updateRect(param.valueTimeRect, currentX - 5, currentY - 5, 10, 10);
+    }
     previousX = currentX;
     previousY = currentY;
   });
