@@ -1,11 +1,11 @@
+var addMouseHandlers = require('./envelopeMouseHandlers.js');
+
 var updateEnvelope = function(data) {
   var audioEnvelope = data.audio.envelope;
   var envelopeData = data.ui.envelope;
 
-  var envelopeSvg = document.getElementById('svg-envelope');
-  var boundRect = envelopeSvg.getBoundingClientRect();
-  var width = envelopeSvg.getAttributeNS(null, 'width');
-  var height = envelopeSvg.getAttributeNS(null, 'height');
+  var width = envelopeData.width;
+  var height = envelopeData.height;
 
   var releaseMin = envelopeData.releaseMin;
   var minSpacing = envelopeData.minSpacing;
@@ -16,94 +16,6 @@ var updateEnvelope = function(data) {
   var drawHeight = height - (marginY * 2);
 
   var propNames = ['delay', 'attack', 'decay', 'sustain', 'release'];
-
-  var between = function(value, min, max) {
-    return Math.min(Math.max(value, min), max);
-  };
-
-  var addMouseHandlers = function(params) {
-    var mouseUpHandler = function(e) {
-      envelopeSvg.style.cursor = '';
-      document.removeEventListener('mousemove', timeDragHandler);
-      document.removeEventListener('mousemove', valueTimeDragHandler);
-      document.removeEventListener('mouseup', mouseUpHandler);
-    };
-
-    var timeDragHandler = function(e) {
-      var x = parseInt(params.timeRect.getAttributeNS(null, 'x'), 10);
-      var xOffset = e.clientX - boundRect.left;
-      var newX = between(xOffset - (params.previousX + minSpacing), 0, maxSpacing);
-      var paramTime = newX/maxSpacing;
-      audioEnvelope[params.name + 'Time'] = paramTime;
-      data.envelopeChanged = true;
-    };
-
-    var valueTimeDragHandler = function(e) {
-      var y = parseInt(params.valueTimeRect.getAttributeNS(null, 'y'), 10);
-      var newY = between(e.clientY - marginY, 0, drawHeight);
-      var paramValue = 1 - (newY/drawHeight);
-      audioEnvelope[params.name + 'Value'] = paramValue;
-      if (params.name === 'sustain' || params.name === 'decay') {
-        audioEnvelope.decayValue = paramValue;
-        audioEnvelope.sustainValue = paramValue;
-      }
-      if (params.name !== 'sustain') {
-        timeDragHandler(e);
-      }
-      data.envelopeChanged = true;
-    };
-
-    var startTimeDrag = function(e) {
-      envelopeSvg.style.cursor = 'ew-resize';
-      document.addEventListener('mousemove', timeDragHandler);
-      document.addEventListener('mouseup', mouseUpHandler);
-    };
-
-    var startValueTimeDrag = function(e) {
-      if (params.name === 'sustain') {
-        envelopeSvg.style.cursor = 'ns-resize';
-      } else {
-        envelopeSvg.style.cursor = 'move';
-      }
-      document.addEventListener('mousemove', valueTimeDragHandler);
-      document.addEventListener('mouseup', mouseUpHandler);
-    };
-
-    var overTime = function(e) {
-      if (envelopeSvg.style.cursor === '') {
-        params.timeRect.style.cursor = 'ew-resize';
-      }
-    };
-
-    var leaveTime = function(e) {
-      if (envelopeSvg.style.cursor === '') {
-        params.timeRect.style.cursor = '';
-      }
-    };
-
-    var overValueTime = function(e) {
-      if (envelopeSvg.style.cursor === '') {
-        params.valueTimeRect.style.cursor = (params.name === 'sustain') ? 'ns-resize' : 'move';
-      }
-    };
-
-    var leaveValueTime = function(e) {
-      if (envelopeSvg.style.cursor === '') {
-        params.valueTimeRect.style.cursor = '';
-      }
-    };
-
-    if (params.name !== 'sustain') {
-      params.timeRect.addEventListener('mousedown', startTimeDrag);
-      params.timeRect.addEventListener('mouseover', overTime);
-      params.timeRect.addEventListener('mouseleave', leaveTime);
-    }
-    if (params.name !== 'release') {
-      params.valueTimeRect.addEventListener('mousedown', startValueTimeDrag);
-      params.valueTimeRect.addEventListener('mouseover', overValueTime);
-      params.valueTimeRect.addEventListener('mouseleave', leaveValueTime);
-    }
-  };
 
   var params = propNames.reduce(function(params, name) {
     var elementParams = {
@@ -117,7 +29,7 @@ var updateEnvelope = function(data) {
       name: name,
       previousX: 0
     };
-    addMouseHandlers(elementParams);
+    addMouseHandlers(data, elementParams);
     params.push(elementParams);
     return params;
   }, []);
