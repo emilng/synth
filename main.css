@@ -148,3 +148,24 @@ body {
   font-size: 12px;
   font-weight: bold;
 }
+
+#envelope-table {
+  width: 400px;
+  background-color: #EEE;
+}
+
+.delay-cell {
+  color: limegreen;
+}
+
+.attack-cell {
+  color: crimson;
+}
+
+.decay-cell {
+  color: orange;
+}
+
+.release-cell {
+  color: darkorchid;
+}
