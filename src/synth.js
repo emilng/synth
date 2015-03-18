@@ -16,11 +16,13 @@ var keyHandlers = require('./ui/keyHandlers');
 
 // ui update
 var updateEnvelopeVisual = require('./ui/updateEnvelopeVisual.js');
+var getUpdateEnvelopeTableHandler = require('./ui/updateEnvelopeTable.js');
 var updateKeyboard = require('./ui/updateKeyboard.js');
 var getDrawVisualizerHandler = require('./ui/drawVisualizer.js');
 
 var getUpdateHandler = function(data) {
   var drawVisualizer = getDrawVisualizerHandler(data);
+  var updateEnvelopeTable = getUpdateEnvelopeTableHandler(data);
   var update = function() {
     if (data.notesChanged) {
       updateKeyboard(data);
@@ -28,6 +30,7 @@ var getUpdateHandler = function(data) {
     }
     if (data.envelopeChanged) {
       updateEnvelopeVisual(data);
+      updateEnvelopeTable();
       data.envelopeChanged = false;
     }
     drawVisualizer();

@@ -166,6 +166,14 @@ body {
   color: orange;
 }
 
+.sustain-cell {
+  color: steelblue;
+}
+
 .release-cell {
   color: darkorchid;
+}
+
+.synth-module {
+  width: 400px;
 }
