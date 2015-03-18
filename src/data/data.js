@@ -26,6 +26,7 @@ var data = {
     keyDimensions: null,
     keyOffsets: [],
     envelope: {
+      propNames: ['delay', 'attack', 'decay', 'sustain', 'release'],
       width: 400,
       height: 150,
       minSpacing: 20,

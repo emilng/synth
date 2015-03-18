@@ -1,6 +1,6 @@
 var addMouseHandlers = require('./envelopeMouseHandlers.js');
 
-var updateEnvelope = function(data) {
+var updateEnvelopeVisual = function(data) {
   var audioEnvelope = data.audio.envelope;
   var envelopeData = data.ui.envelope;
 
@@ -15,9 +15,9 @@ var updateEnvelope = function(data) {
   var bottomY = height - marginY;
   var drawHeight = height - (marginY * 2);
 
-  var propNames = ['delay', 'attack', 'decay', 'sustain', 'release'];
+  var propNames = envelopeData.propNames;
 
-  var params = propNames.reduce(function(params, name) {
+  var params = envelopeData.propNames.reduce(function(params, name) {
     var elementParams = {
       timeLine: document.getElementById('envelope-' + name + '-time'),
       valueLine: document.getElementById('envelope-' + name + '-value'),
@@ -76,4 +76,4 @@ var updateEnvelope = function(data) {
 
 };
 
-module.exports = updateEnvelope;
+module.exports = updateEnvelopeVisual;
