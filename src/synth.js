@@ -15,7 +15,7 @@ var clickHandlers = require('./ui/clickHandlers.js');
 var keyHandlers = require('./ui/keyHandlers');
 
 // ui update
-var updateEnvelopeVisual = require('./ui/updateEnvelopeVisual.js');
+var getUpdateEnvelopeVisualHandler = require('./ui/updateEnvelopeVisual.js');
 var getUpdateEnvelopeTableHandler = require('./ui/updateEnvelopeTable.js');
 var updateKeyboard = require('./ui/updateKeyboard.js');
 var getDrawVisualizerHandler = require('./ui/drawVisualizer.js');
@@ -23,13 +23,14 @@ var getDrawVisualizerHandler = require('./ui/drawVisualizer.js');
 var getUpdateHandler = function(data) {
   var drawVisualizer = getDrawVisualizerHandler(data);
   var updateEnvelopeTable = getUpdateEnvelopeTableHandler(data);
+  var updateEnvelopeVisual = getUpdateEnvelopeVisualHandler(data);
   var update = function() {
     if (data.notesChanged) {
       updateKeyboard(data);
       data.notesChanged = false;
     }
     if (data.envelopeChanged) {
-      updateEnvelopeVisual(data);
+      updateEnvelopeVisual();
       updateEnvelopeTable();
       data.envelopeChanged = false;
     }

@@ -2,7 +2,6 @@ var addMouseHandlers = function(data, params) {
   var audioEnvelope = data.audio.envelope;
   var envelopeData = data.ui.envelope;
   var envelopeSvg = document.getElementById('svg-envelope');
-  var boundRect = envelopeSvg.getBoundingClientRect();
   var width = envelopeData.width;
   var height = envelopeData.height;
   var minSpacing = envelopeData.minSpacing;
@@ -24,6 +23,7 @@ var addMouseHandlers = function(data, params) {
 
   var timeDragHandler = function(e) {
     var x = parseInt(params.timeRect.getAttributeNS(null, 'x'), 10);
+    var boundRect = envelopeSvg.getBoundingClientRect();
     var xOffset = e.clientX - boundRect.left;
     var newX = between(xOffset - (params.previousX + minSpacing), 0, maxSpacing);
     var paramTime = newX/maxSpacing;
@@ -33,7 +33,9 @@ var addMouseHandlers = function(data, params) {
 
   var valueTimeDragHandler = function(e) {
     var y = parseInt(params.valueTimeRect.getAttributeNS(null, 'y'), 10);
-    var newY = between(e.clientY - marginY, 0, drawHeight);
+    var boundRect = envelopeSvg.getBoundingClientRect();
+    var mouseY = e.clientY - boundRect.top;
+    var newY = between(mouseY - marginY, 0, drawHeight);
     var paramValue = 1 - (newY/drawHeight);
     audioEnvelope[params.name + 'Value'] = paramValue;
     if (params.name === 'sustain' || params.name === 'decay') {
