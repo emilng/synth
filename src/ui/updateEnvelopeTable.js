@@ -20,7 +20,7 @@ var getUpdateEnvelopeTableHandler = function(data) {
     }
     return cells;
   }, []);
-  console.log(tableCells);
+
   tableCells.forEach(function(cell) {
     cell.element.addEventListener('change', function() {
       envelopeAudio[cell.name] = parseInt(cell.element.value, 10)/100;
