@@ -3,37 +3,35 @@ var getUpdateEnvelopeTableHandler = function(data) {
   var envelopeAudio = data.audio.envelope;
   var envelopeUI = data.ui.envelope;
 
-  var params = envelopeUI.propNames.reduce(function(params, name) {
-    timeElement = document.getElementById(name + '-time-cell');
-    valueElement = document.getElementById(name + '-value-cell');
-    if (timeElement) {
-      var timeObj = {
-        element: timeElement,
-        name: name + 'Time',
-      };
-      params.push(timeObj);
-    }
-    if (valueElement) {
-      var valueObj = {
-        element: valueElement,
-        name: name + 'Value',
-      };
-      params.push(valueObj);
-    }
-    return params;
-  }, []);
+  var getCellObj = function(cellId, cellName) {
+    var cellElement = document.getElementById(cellId);
+    var cellObj = { element: cellElement, name: cellName };
+    return (cellElement) ? cellObj : null;
+  };
 
-  params.forEach(function(param) {
-    param.element.addEventListener('change', function() {
-      envelopeAudio[param.name] = parseInt(param.element.value, 10)/100;
+  var tableCells = envelopeUI.propNames.reduce(function(cells, name) {
+    var timeCell = getCellObj(name + '-time-cell', name + 'Time');
+    var valueCell = getCellObj(name + '-value-cell', name + 'Value');
+    if (timeCell) {
+      cells.push(timeCell);
+    }
+    if (valueCell) {
+      cells.push(valueCell);
+    }
+    return cells;
+  }, []);
+  console.log(tableCells);
+  tableCells.forEach(function(cell) {
+    cell.element.addEventListener('change', function() {
+      envelopeAudio[cell.name] = parseInt(cell.element.value, 10)/100;
       data.envelopeChanged = true;
     });
   });
 
   var updateEnvelopeTable = function() {
-    params.forEach(function(param) {
-      var value = envelopeAudio[param.name];
-      param.element.value = value * 100;
+    tableCells.forEach(function(cell) {
+      var value = envelopeAudio[cell.name];
+      cell.element.value = value * 100;
     });
   };
 
