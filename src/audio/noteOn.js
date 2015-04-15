@@ -17,20 +17,18 @@ var noteOn = function(data, keyIndex) {
     var noteIndex = (octave * 12) + keyIndex;
     if (noteIndex < notes.length - 1) {
       var note = notes[noteIndex];
-      var osc = audio.context.createOscillator();
-      var gainNode = audio.context.createGain();
-      audio.gainNodes[keyIndex] = gainNode;
-      osc.connect(gainNode);
-      gainNode.connect(audio.masterGain);
+      osc = audio.oscillatorNodes[keyIndex];
+      gainNode = audio.gainNodes[keyIndex];
       osc.type = osc.SINE;
       osc.noteIndex = noteIndex;
       osc.frequency.value = note.frequency;
-      osc.start(now);
-      gainNode.gain.cancelScheduledValues(now);
-      gainNode.gain.setValueAtTime(envelope.delayValue, now);
-      var delayTime = now + (envelope.delayTime * DELAY_MAX_TIME);
+      var startTime = now + 0.01;
+      var delayTime = startTime + (envelope.delayTime * DELAY_MAX_TIME);
       var attackTime = delayTime + (envelope.attackTime * ATTACK_MAX_TIME);
       var decayTime = attackTime + (envelope.decayTime * DECAY_MAX_TIME);
+      gainNode.gain.cancelScheduledValues(now);
+      gainNode.gain.setValueAtTime(gainNode.gain.value, now);
+      gainNode.gain.setValueAtTime(envelope.delayValue, startTime);
       gainNode.gain.linearRampToValueAtTime(envelope.delayValue, delayTime);
       gainNode.gain.linearRampToValueAtTime(envelope.attackValue, attackTime);
       gainNode.gain.linearRampToValueAtTime(envelope.decayValue, decayTime);

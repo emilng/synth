@@ -46,6 +46,16 @@ var main = function() {
   var context = new AudioContext();
   var masterGain = context.createGain();
   masterGain.gain.value = 0.5;
+  data.ui.keyChars.forEach(function(value, index) {
+    var osc = context.createOscillator();
+    osc.start(0);
+    data.audio.oscillatorNodes[index] = osc;
+    var gainNode = context.createGain();
+    gainNode.gain.setValueAtTime(0, 0);
+    data.audio.gainNodes[index] = gainNode;
+    osc.connect(gainNode);
+    gainNode.connect(masterGain);
+  });
   var compressor = context.createDynamicsCompressor();
   var analyser = context.createAnalyser();
   masterGain.connect(compressor);

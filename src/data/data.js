@@ -2,6 +2,7 @@ var data = {
   audio: {
     context: null,
     gainNodes: [],
+    oscillatorNodes: [],
     masterGain: null,
     analyser: null,
     octave: 3,
