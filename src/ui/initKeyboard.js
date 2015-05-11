@@ -1,5 +1,4 @@
 var initKeyboard = function(data) {
-  var keyboard = document.getElementById('full-keyboard');
   var canvas = document.createElement('canvas');
   canvas.width = 400;
   canvas.height = 30;
@@ -8,7 +7,7 @@ var initKeyboard = function(data) {
     black: {width: 4, height: 14},
     white: {width: 6, height: 22}
   };
-  var halfWhiteKeyWidth = Math.round(keyDimensions.white.width/2);
+  var halfWhiteKeyWidth = Math.round(keyDimensions.white.width / 2);
   ctx.strokeStyle = '#000';
   ctx.lineWidth = 1;
   ctx.fillStyle = '#000';

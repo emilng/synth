@@ -4,7 +4,7 @@ var updateOctave = require('../audio/updateOctave.js');
 
 var setupNoteClickHandlers = function(data) {
   var getClickHandler = function(data, index) {
-    return function(e) {
+    return function() {
       noteOn(data, index);
     };
   };
@@ -18,7 +18,7 @@ var setupNoteClickHandlers = function(data) {
 
 var setupOctaveClickHandlers = function(data) {
   var getClickHandler = function(data, direction) {
-    return function(e) {
+    return function() {
       updateOctave(data, direction);
     };
   };
@@ -29,7 +29,7 @@ var setupOctaveClickHandlers = function(data) {
 };
 
 var getNoteOffHandler = function(data) {
-  return function(e) {
+  return function() {
     noteOff(data);
   };
 };

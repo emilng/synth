@@ -1,0 +1,15 @@
+{
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
+  "rules": {
+    "curly": 2,
+    "eqeqeq": 2,
+    "no-cond-assign": "always",
+    "no-shadow": 0,
+    "quotes": [1, "single", "avoid-escape"],
+    "strict": [2, "never"]
+  }
+}

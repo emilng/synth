@@ -4,7 +4,6 @@ var getUpdateEnvelopeVisualHandler = function(data) {
   var audioEnvelope = data.audio.envelope;
   var envelopeData = data.ui.envelope;
 
-  var width = envelopeData.width;
   var height = envelopeData.height;
 
   var releaseMin = envelopeData.releaseMin;
@@ -14,8 +13,6 @@ var getUpdateEnvelopeVisualHandler = function(data) {
   var marginY = envelopeData.marginY;
   var bottomY = height - marginY;
   var drawHeight = height - (marginY * 2);
-
-  var propNames = envelopeData.propNames;
 
   var params = envelopeData.propNames.reduce(function(params, name) {
     var elementParams = {

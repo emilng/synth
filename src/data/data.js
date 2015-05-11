@@ -22,7 +22,7 @@ var data = {
     activeNotes: null
   },
   ui: {
-    keyChars: ["A", "W", "S", "E", "D", "F", "T", "G", "Y", "H", "U", "J", "K", "O", "L", "P", ";", "'"],
+    keyChars: ['A', 'W', 'S', 'E', 'D', 'F', 'T', 'G', 'Y', 'H', 'U', 'J', 'K', 'O', 'L', 'P', ';', "'"],
     keyboard: null,
     keyDimensions: null,
     keyOffsets: [],
@@ -35,7 +35,7 @@ var data = {
       marginY: 20,
       marginX: 25,
       // enough room to give the 4 elements before it maxSpacing
-      releaseMin: 295,
+      releaseMin: 295
     }
   },
   notesChanged: true,

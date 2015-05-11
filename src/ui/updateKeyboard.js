@@ -4,7 +4,6 @@ var updateKeyboard = function(data) {
   var canvas = document.getElementById('full-keyboard');
   var ctx = canvas.getContext('2d');
   ctx.putImageData(ui.keyboard, 0, 0);
-  var keys = data.keys;
   ctx.fillStyle = 'rgba(140,140,140,0.8)';
   audio.activeNotes.map(function(isNoteActive, index) {
     var key = document.getElementById('key-' + index);

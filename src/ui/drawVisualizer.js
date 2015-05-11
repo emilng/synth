@@ -17,11 +17,11 @@ var getDrawVisualizerHandler = function(data) {
     ctx.fillRect(0, 0, width, height);
     ctx.beginPath();
 
-    var sliceWidth = width * (1.0/bufferLength);
-    var x  = 0;
+    var sliceWidth = width * (1.0 / bufferLength);
+    var x = 0;
     for (var i = 0; i < bufferLength; i++) {
       var v = dataArray[i] / 128.0;
-      var y = v * height/2;
+      var y = v * height / 2;
       if (i === 0) {
         ctx.moveTo(x, y);
       } else {
@@ -30,7 +30,7 @@ var getDrawVisualizerHandler = function(data) {
       x += sliceWidth;
     }
 
-    ctx.lineTo(width, height/2);
+    ctx.lineTo(width, height / 2);
     ctx.stroke();
   };
   return drawVisualizer;

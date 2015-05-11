@@ -17,8 +17,8 @@ var noteOn = function(data, keyIndex) {
     var noteIndex = (octave * 12) + keyIndex;
     if (noteIndex < notes.length - 1) {
       var note = notes[noteIndex];
-      osc = audio.oscillatorNodes[keyIndex];
-      gainNode = audio.gainNodes[keyIndex];
+      var osc = audio.oscillatorNodes[keyIndex];
+      var gainNode = audio.gainNodes[keyIndex];
       osc.type = osc.SINE;
       osc.noteIndex = noteIndex;
       osc.frequency.value = note.frequency;

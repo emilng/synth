@@ -42,7 +42,7 @@ var getUpdateHandler = function(data) {
 };
 
 var main = function() {
-  window.AudioContext = window.AudioContext || window.webkitAudioContext;
+  var AudioContext = window.AudioContext = window.AudioContext || window.webkitAudioContext;
   var context = new AudioContext();
   var masterGain = context.createGain();
   masterGain.gain.value = 0.5;

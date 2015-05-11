@@ -3,9 +3,10 @@ var noteOff = require('../audio/noteOff.js');
 var updateOctave = require('../audio/updateOctave.js');
 
 var getKeyIndex = function(data, keyCode) {
+    var keyChar;
     // there 2 separate keycodes for semicolon and single quote because browsers
     if (keyCode === 186 || keyCode === 59) {
-      keyChar = ";";
+      keyChar = ';';
     } else if (keyCode === 222 || keyCode === 39) {
       keyChar = "'";
     } else {
@@ -27,9 +28,9 @@ var getKeyDownHandler = function(data) {
       e.preventDefault();
     }
     var keyChar = String.fromCharCode(keyCode);
-    if (keyChar === "Z") {
+    if (keyChar === 'Z') {
       updateOctave(data, -1);
-    } else if (keyChar === "X") {
+    } else if (keyChar === 'X') {
       updateOctave(data, 1);
     }
   };
