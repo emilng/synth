@@ -12,6 +12,19 @@ body {
   font-family: sans-serif;
 }
 
+table, caption, tbody, tfoot, thead, tr, th, td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
 .column {
   float: left;
   margin-left: 10px;
@@ -152,6 +165,18 @@ body {
 #envelope-table {
   width: 400px;
   background-color: #EEE;
+}
+
+.envelope-input {
+  width: 80%;
+}
+
+.envelope-row {
+  width: 300px;
+}
+
+.envelope-cell {
+ width: 50px;
 }
 
 .delay-cell {
