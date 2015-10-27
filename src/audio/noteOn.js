@@ -19,7 +19,6 @@ var noteOn = function(data, keyIndex) {
       var note = notes[noteIndex];
       var osc = audio.oscillatorNodes[keyIndex];
       var gainNode = audio.gainNodes[keyIndex];
-      osc.type = osc.SINE;
       osc.noteIndex = noteIndex;
       osc.frequency.value = note.frequency;
       var startTime = now + 0.01;

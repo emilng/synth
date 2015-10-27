@@ -48,6 +48,7 @@ var main = function() {
   masterGain.gain.value = 0.5;
   data.ui.keyChars.forEach(function(value, index) {
     var osc = context.createOscillator();
+    osc.type = 'sine';
     osc.start(0);
     data.audio.oscillatorNodes[index] = osc;
     var gainNode = context.createGain();
