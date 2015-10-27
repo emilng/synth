@@ -1,8 +1,6 @@
 var browserify = require('browserify');
 var buffer = require('vinyl-buffer');
-var es6ify = require('es6ify');
 var gulp = require('gulp');
-var reactify = require('reactify');
 var source = require('vinyl-source-stream');
 var sourcemaps = require('gulp-sourcemaps');
 var uglify = require('gulp-uglify');
@@ -23,8 +21,6 @@ gulp.task('js', function() {
   });
 
   var bundle = function() {
-    bundler.transform(reactify);
-    bundler.transform(es6ify.configure(/.jsx/));
     bundler
       .bundle()
       .pipe(source(getBundleName() + '.js'))

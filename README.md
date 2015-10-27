@@ -18,6 +18,17 @@ Synth is a simple browser based synthesizer using the web audio API.
 - gulp-sourcemaps - allows for original source to be referenced from minified code
 - gulp-uglify - code minifier/compressor
 
+### Development
+Install npm packages
+```
+npm install
+```
+
+To build the source files and output them to the dist folder
+```
+npm run build
+```
+
 ### Todos
 - allow waveform type to be changed
 - add filter
